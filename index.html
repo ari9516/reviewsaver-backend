@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ReviewSaver - India's Review Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        
+        /* Header */
+        .header { background: #1a73e8; color: white; padding: 15px; text-align: center; }
+        .header h1 { font-size: 24px; }
+        
+        /* Container */
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        
+        /* Status Bar */
+        .status-bar { background: #e8f0fe; padding: 10px; border-radius: 5px; margin-bottom: 20px; text-align: center; }
+        .connected { color: green; font-weight: bold; }
+        .disconnected { color: red; font-weight: bold; }
+        
+        /* Login Section */
+        .login-section { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .login-section h2 { margin-bottom: 15px; color: #333; }
+        .login-section input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        .login-section button { background: #1a73e8; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .login-section button:hover { background: #1557b0; }
+        
+        /* User Info */
+        .user-info { background: #e6f4ea; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: none; }
+        .user-info h3 { color: #137333; margin-bottom: 10px; }
+        
+        /* Review Form */
+        .review-form { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: none; }
+        .review-form h2 { margin-bottom: 15px; color: #333; }
+        .review-form input, .review-form select, .review-form textarea { 
+            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; 
+        }
+        .review-form button { background: #34a853; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        
+        /* Filter Section */
+        .filter-section { background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; gap: 10px; }
+        .filter-section select { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .filter-section button { background: #fbbc04; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        
+        /* Reviews Display */
+        .reviews-section { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .review-card { border: 1px solid #eee; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .review-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .user-email { font-weight: bold; color: #1a73e8; }
+        .category-badge { background: #e8f0fe; padding: 3px 10px; border-radius: 15px; font-size: 12px; }
+        .product-name { font-size: 18px; font-weight: bold; }
+        .rating { color: #fbbc04; font-size: 20px; margin: 5px 0; }
+        .review-text { margin: 10px 0; line-height: 1.5; font-style: italic; }
+        .vote-buttons { display: flex; gap: 15px; margin-top: 10px; }
+        .vote-btn { background: none; border: 1px solid #ddd; padding: 5px 15px; border-radius: 20px; cursor: pointer; }
+        .vote-btn:hover { background: #f0f0f0; }
+        .timestamp { color: #666; font-size: 12px; margin-top: 10px; }
+        
+        .no-reviews { text-align: center; padding: 40px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📱 ReviewSaver - India's #1 Review Platform</h1>
+    </div>
+
+    <div class="container">
+        <!-- Status Bar -->
+        <div class="status-bar" id="statusBar">
+            Checking backend connection...
+        </div>
+
+        <!-- Login Section -->
+        <div class="login-section" id="loginSection">
+            <h2>🔐 Login / Register</h2>
+            <input type="email" id="email" placeholder="Your Email" value="arnab@demo.com">
+            <input type="text" id="deviceHash" placeholder="Device ID" value="device_4jv71w4e1gomlw4fgc0">
+            <button onclick="login()">Login / Register</button>
+            <div id="loginResult"></div>
+        </div>
+
+        <!-- User Info (shown after login) -->
+        <div class="user-info" id="userInfo">
+            <h3>✅ Welcome!</h3>
+            <p id="userDetails"></p>
+        </div>
+
+        <!-- Review Form (shown after login) -->
+        <div class="review-form" id="reviewForm">
+            <h2>✍️ Write a Review</h2>
+            <input type="text" id="productName" placeholder="Product Name" value="iPhone 15">
+            <select id="category">
+                <option value="movies">🎬 Movies</option>
+                <option value="electronics">📱 Electronics</option>
+                <option value="restaurants">🍽️ Restaurants</option>
+                <option value="cafes">☕ Cafes</option>
+                <option value="food">🍕 Food</option>
+            </select>
+            <select id="rating">
+                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                <option value="4">⭐⭐⭐⭐ Good</option>
+                <option value="3">⭐⭐⭐ Average</option>
+                <option value="2">⭐⭐ Poor</option>
+                <option value="1">⭐ Terrible</option>
+            </select>
+            <textarea id="reviewText" placeholder="Write your review..." rows="4">Great product! Highly recommend.</textarea>
+            <button onclick="postReview()">Post Review</button>
+            <div id="postResult"></div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <select id="categoryFilter">
+                <option value="all">All Categories</option>
+                <option value="movies">Movies</option>
+                <option value="electronics">Electronics</option>
+                <option value="restaurants">Restaurants</option>
+                <option value="cafes">Cafes</option>
+                <option value="food">Food</option>
+            </select>
+            <button onclick="filterReviews()">Filter</button>
+            <button onclick="loadAllReviews()">Show All</button>
+        </div>
+
+        <!-- Reviews Display -->
+        <div class="reviews-section">
+            <h2>📋 Latest Reviews</h2>
+            <div id="reviewsList">Loading reviews...</div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+        let currentUser = null;
+
+        // Check backend connection
+        async function checkBackend() {
+            try {
+                const response = await fetch(`${API_URL}/reviews`);
+                if (response.ok) {
+                    document.getElementById('statusBar').innerHTML = '✅ <span class="connected">Connected to backend!</span>';
+                } else {
+                    document.getElementById('statusBar').innerHTML = '❌ <span class="disconnected">Backend error: ' + response.status + '</span>';
+                }
+            } catch (error) {
+                document.getElementById('statusBar').innerHTML = '❌ <span class="disconnected">Cannot connect to backend. Make sure Spring Boot is running!</span>';
+            }
+        }
+
+        // Login function
+        async function login() {
+            const email = document.getElementById('email').value;
+            const deviceHash = document.getElementById('deviceHash').value;
+
+            try {
+                document.getElementById('loginResult').innerHTML = '⏳ Logging in...';
+                
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, deviceHash })
+                });
+                
+                const data = await response.json();
+                
+                if (data.userId) {
+                    currentUser = data;
+                    document.getElementById('loginResult').innerHTML = '✅ Login successful!';
+                    document.getElementById('userInfo').style.display = 'block';
+                    document.getElementById('userDetails').innerHTML = `User ID: ${data.userId} | Email: ${email} | ${data.message}`;
+                    document.getElementById('reviewForm').style.display = 'block';
+                    document.getElementById('loginSection').style.backgroundColor = '#e6f4ea';
+                    loadAllReviews();
+                } else {
+                    document.getElementById('loginResult').innerHTML = '❌ Error: ' + (data.error || 'Login failed');
+                }
+            } catch (error) {
+                document.getElementById('loginResult').innerHTML = '❌ Error: ' + error.message;
+            }
+        }
+
+        // Post review
+        async function postReview() {
+            if (!currentUser) {
+                alert('Please login first!');
+                return;
+            }
+
+            const review = {
+                userId: currentUser.userId,
+                productName: document.getElementById('productName').value,
+                category: document.getElementById('category').value,
+                rating: parseInt(document.getElementById('rating').value),
+                reviewText: document.getElementById('reviewText').value
+            };
+
+            try {
+                document.getElementById('postResult').innerHTML = '⏳ Posting...';
+                
+                const response = await fetch(`${API_URL}/reviews`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(review)
+                });
+                
+                const data = await response.json();
+                document.getElementById('postResult').innerHTML = '✅ Review posted successfully!';
+                document.getElementById('reviewText').value = '';
+                loadAllReviews();
+            } catch (error) {
+                document.getElementById('postResult').innerHTML = '❌ Error: ' + error.message;
+            }
+        }
+
+        // Load all reviews
+        async function loadAllReviews() {
+            try {
+                const response = await fetch(`${API_URL}/reviews`);
+                const reviews = await response.json();
+                displayReviews(reviews);
+            } catch (error) {
+                document.getElementById('reviewsList').innerHTML = 'Error loading reviews: ' + error.message;
+            }
+        }
+
+        // Filter reviews by category
+        async function filterReviews() {
+            const category = document.getElementById('categoryFilter').value;
+            
+            if (category === 'all') {
+                loadAllReviews();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/reviews/category/${category}`);
+                const reviews = await response.json();
+                displayReviews(reviews);
+            } catch (error) {
+                document.getElementById('reviewsList').innerHTML = 'Error: ' + error.message;
+            }
+        }
+
+        // Vote on review
+        async function vote(reviewId, type) {
+            if (!currentUser) {
+                alert('Please login to vote!');
+                return;
+            }
+            
+            try {
+                await fetch(`${API_URL}/reviews/${reviewId}/${type}`, { method: 'PUT' });
+                loadAllReviews();
+            } catch (error) {
+                alert('Error voting: ' + error.message);
+            }
+        }
+
+        // Display reviews
+        function displayReviews(reviews) {
+            if (!reviews || reviews.length === 0) {
+                document.getElementById('reviewsList').innerHTML = '<div class="no-reviews">📭 No reviews yet. Be the first to write one!</div>';
+                return;
+            }
+
+            let html = '';
+            reviews.forEach(review => {
+                html += `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="user-email">👤 ${review.user?.email || 'User ' + review.user?.id}</span>
+                            <span class="category-badge">${review.category}</span>
+                        </div>
+                        <div class="product-name">${review.productName}</div>
+                        <div class="rating">${'⭐'.repeat(review.rating)}</div>
+                        <div class="review-text">"${review.reviewText}"</div>
+                        <div class="vote-buttons">
+                            <button class="vote-btn" onclick="vote(${review.id}, 'upvote')">👍 ${review.upvotes}</button>
+                            <button class="vote-btn" onclick="vote(${review.id}, 'downvote')">👎 ${review.downvotes}</button>
+                        </div>
+                        <div class="timestamp">📅 ${new Date(review.createdAt).toLocaleString()}</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('reviewsList').innerHTML = html;
+        }
+
+        // Initialize
+        window.onload = function() {
+            checkBackend();
+            loadAllReviews();
+            
+            // Auto-fill device hash if empty
+            const deviceInput = document.getElementById('deviceHash');
+            if (!deviceInput.value) {
+                deviceInput.value = 'device_' + Math.random().toString(36).substring(2);
+            }
+        };
+    </script>
+</body>
+</html>
