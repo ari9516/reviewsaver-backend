@@ -1,13 +1,13 @@
 import FollowingPage from './pages/FollowingPage';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import FollowersPage from './pages/FollowersPage';
-
-
+import TrendingPage from './pages/TrendingPage';
+import LeaderboardPage from './pages/LeaderboardPage';
 
 function App() {
   
@@ -19,18 +19,20 @@ function App() {
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50">
         <nav className="bg-white shadow p-4">
-          <div className="container mx-auto flex justify-between">
-            <a href="/" className="font-bold text-xl">ReviewSaver</a>
-            <div>
+          <div className="container mx-auto flex justify-between items-center">
+            <Link to="/" className="font-bold text-xl">ReviewSaver</Link>
+            <div className="space-x-4">
+              <Link to="/trending" className="hover:text-blue-600">Trending</Link>
+              <Link to="/leaderboard" className="hover:text-blue-600">Leaderboard</Link>
               {user ? (
                 <>
-                  <a href={`/profile/${user.id}`} className="mr-4">Profile</a>
-                  <button onClick={logout} className="text-red-500">Logout</button>
+                  <Link to={`/profile/${user.id}`} className="hover:text-blue-600">Profile</Link>
+                  <button onClick={logout} className="text-red-500 hover:text-red-700">Logout</button>
                 </>
               ) : (
                 <>
-                  <a href="/login" className="mr-4">Login</a>
-                  <a href="/register">Register</a>
+                  <Link to="/login" className="hover:text-blue-600">Login</Link>
+                  <Link to="/register" className="hover:text-blue-600">Register</Link>
                 </>
               )}
             </div>
@@ -44,6 +46,8 @@ function App() {
           <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/profile/:id/followers" element={<FollowersPage />} />
           <Route path="/profile/:id/following" element={<FollowingPage />} />
+          <Route path="/trending" element={<TrendingPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
         </Routes>
       </div>
     </BrowserRouter>
