@@ -1,47 +1,44 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import reviewService from '../services/reviewService';
 
-export default function LoginPage() {
+function LoginPage() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const getDeviceHash = () => {
+    let hash = localStorage.getItem('deviceHash');
+    if (!hash) {
+      hash = 'device_' + Math.random().toString(36).substring(2);
+      localStorage.setItem('deviceHash', hash);
+    }
+    return hash;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await login(email, password);
+    setLoading(true);
+    const deviceHash = getDeviceHash();
+    const data = await reviewService.login(email, deviceHash);
+    if (data.userId) {
+      login({ id: data.userId, email });
       navigate('/');
-    } catch (err) {
-      alert('Login failed');
     }
+    setLoading(false);
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl mb-4">Login</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 border rounded mb-4"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border rounded mb-4"
-          required
-        />
-        <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
-          Login
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded">
+      <h2 className="text-2xl mb-4">Login</h2>
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 mb-4 border rounded" required />
+      <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white p-2 rounded">
+        {loading ? 'Logging in...' : 'Login'}
+      </button>
+    </form>
   );
 }
+
+export default LoginPage;
