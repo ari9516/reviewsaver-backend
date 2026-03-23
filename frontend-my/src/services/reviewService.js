@@ -36,6 +36,20 @@ const reviewService = {
     }
   },
 
+  searchReviews: async (query, page = 0, size = 10) => {
+    try {
+      const url = `${API_BASE_URL}/reviews/search?q=${encodeURIComponent(query)}&page=${page}&size=${size}`;
+      console.log('Searching reviews from:', url);
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log('Search response:', data);
+      return data;
+    } catch (error) {
+      console.error('Search error:', error);
+      throw error;
+    }
+  },
+
   createReview: async (reviewData) => {
     try {
       console.log('Creating review with data:', reviewData);

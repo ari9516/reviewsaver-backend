@@ -9,6 +9,8 @@ function ReviewList({ user }) {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState('all');
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searching, setSearching] = useState(false);
 
   const loadReviews = async () => {
     setLoading(true);
@@ -32,8 +34,49 @@ function ReviewList({ user }) {
     }
   };
 
-  useEffect(() => {
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) {
+      loadReviews();
+      return;
+    }
+    
+    setSearching(true);
+    setError(null);
+    try {
+      console.log('Searching for:', searchTerm);
+      const data = await reviewService.searchReviews(searchTerm, page, 10);
+      console.log('Search results:', data);
+      
+      setReviews(data.content || []);
+      setTotalPages(data.totalPages || 0);
+      
+      if ((data.content || []).length === 0) {
+        console.log('No results found');
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      setError('Failed to search reviews');
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm('');
+    setPage(0);
     loadReviews();
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  useEffect(() => {
+    if (!searchTerm) {
+      loadReviews();
+    }
   }, [page, category]);
 
   const handleVote = async (id, type) => {
@@ -48,7 +91,11 @@ function ReviewList({ user }) {
       } else {
         await reviewService.downvote(id);
       }
-      await loadReviews();
+      if (searchTerm) {
+        await handleSearch();
+      } else {
+        await loadReviews();
+      }
     } catch (error) {
       console.error('Vote error:', error);
     }
@@ -67,8 +114,12 @@ function ReviewList({ user }) {
     }
   };
 
-  if (loading && reviews.length === 0) {
+  if (loading && reviews.length === 0 && !searching) {
     return <div className="loading">Loading reviews...</div>;
+  }
+
+  if (searching) {
+    return <div className="loading">Searching...</div>;
   }
 
   if (error) {
@@ -101,9 +152,37 @@ function ReviewList({ user }) {
         </div>
       </div>
 
+      {/* Search Bar Section */}
+      <div className="search-section">
+        <input
+          type="text"
+          placeholder="🔍 Search reviews by product name... (e.g., Avengers, iPhone, Pizza)"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyPress={handleKeyPress}
+          className="search-input"
+        />
+        <button onClick={handleSearch} className="search-btn">
+          🔍 Search
+        </button>
+        {searchTerm && (
+          <button onClick={handleClearSearch} className="clear-btn">
+            ✖ Clear
+          </button>
+        )}
+      </div>
+
+      {/* Search Results Info */}
+      {searchTerm && (
+        <div className="search-info">
+          Showing results for: <strong>"{searchTerm}"</strong>
+          {reviews.length === 0 && <span> - No results found</span>}
+        </div>
+      )}
+
       {reviews.length === 0 ? (
         <div className="no-reviews">
-          <p>No reviews found. Try changing category or refresh.</p>
+          <p>No reviews found. Try changing category, search term, or refresh.</p>
           <p className="debug-info">Debug: Total reviews in database: {totalPages * 10} (approx)</p>
         </div>
       ) : (
@@ -174,4 +253,4 @@ function ReviewList({ user }) {
   );
 }
 
-export default ReviewList;  
+export default ReviewList;
