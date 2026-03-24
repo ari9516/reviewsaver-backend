@@ -12,7 +12,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 function App() {
   const { user, loading, logout } = useAuth();
 
-  if (loading) return <div className="p-4 text-center">Loading app...</div>;
+  if (loading) return <div className="p-4 text-center">Loading...</div>;
 
   return (
     <BrowserRouter>
