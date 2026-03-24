@@ -36,6 +36,20 @@ const reviewService = {
     }
   },
 
+  searchReviews: async (query, page = 0, size = 10) => {
+    try {
+      const url = `${API_BASE_URL}/reviews/search?q=${encodeURIComponent(query)}&page=${page}&size=${size}`;
+      console.log('Searching reviews from:', url);
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log('Search response:', data);
+      return data;
+    } catch (error) {
+      console.error('Search error:', error);
+      throw error;
+    }
+  },
+
   createReview: async (reviewData) => {
     try {
       console.log('Creating review with data:', reviewData);
@@ -84,6 +98,45 @@ const reviewService = {
       return response.json();
     } catch (error) {
       console.error('Downvote error:', error);
+      throw error;
+    }
+  },
+
+  // Get user profile
+  getUserProfile: async (userId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}`);
+      const data = await response.json();
+      console.log('User profile:', data);
+      return data;
+    } catch (error) {
+      console.error('Get user profile error:', error);
+      throw error;
+    }
+  },
+
+  // Get user stats
+  getUserStats: async (userId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/${userId}/stats`);
+      const data = await response.json();
+      console.log('User stats:', data);
+      return data;
+    } catch (error) {
+      console.error('Get user stats error:', error);
+      throw error;
+    }
+  },
+
+  // Get user's own reviews (for dashboard)
+  getMyReviews: async (userId, page = 0, size = 10) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/reviews/user/${userId}/all?page=${page}&size=${size}`);
+      const data = await response.json();
+      console.log('My reviews:', data);
+      return data;
+    } catch (error) {
+      console.error('Get my reviews error:', error);
       throw error;
     }
   }

@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import Login from './components/Login';
-import ReviewList from './components/ReviewList';
+import Dashboard from './components/Dashboard';
 import ReviewForm from './components/ReviewForm';
+import ReviewList from './components/ReviewList';
 import './App.css';
 
 function App() {
   const [user, setUser] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleLogout = () => {
+    setUser(null);
+  };
 
   const handleReviewAdded = () => {
     setRefreshKey(prev => prev + 1);
@@ -23,23 +28,12 @@ function App() {
         {!user ? (
           <Login onLogin={setUser} />
         ) : (
-          <div className="dashboard">
-            <div className="welcome-section">
-              <div className="user-info">
-                <span className="welcome-message">
-                  👋 Welcome, {user.email}!
-                </span>
-                <button 
-                  className="logout-btn"
-                  onClick={() => setUser(null)}
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
+          <div className="app-container">
+            {/* Dashboard Section - Shows User Profile and Stats */}
+            <Dashboard user={user} onLogout={handleLogout} />
             
-            <div className="content-grid">
-              {/* Review Form Section - THIS SHOULD APPEAR ON THE LEFT */}
+            {/* Combined Content - Review Form and All Reviews */}
+            <div className="content-section">
               <div className="form-section">
                 <ReviewForm 
                   user={user} 
@@ -47,7 +41,6 @@ function App() {
                 />
               </div>
               
-              {/* Reviews List Section - THIS SHOULD APPEAR ON THE RIGHT */}
               <div className="reviews-section">
                 <ReviewList 
                   key={refreshKey}
