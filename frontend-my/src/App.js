@@ -1,64 +1,43 @@
-import React, { useState } from 'react';
-import Login from './components/Login';
-import ReviewList from './components/ReviewList';
-import ReviewForm from './components/ReviewForm';
-import './App.css';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const { user, loading, logout } = useAuth();
 
-  const handleReviewAdded = () => {
-    setRefreshKey(prev => prev + 1);
-  };
+  if (loading) return <div className="p-4 text-center">Loading app...</div>;
 
   return (
-    <div className="App">
-      <header className="app-header">
-        <h1>🎬 ReviewSaver</h1>
-        <p className="tagline">India's #1 Review Platform</p>
-      </header>
-      
-      <main>
-        {!user ? (
-          <Login onLogin={setUser} />
-        ) : (
-          <div className="dashboard">
-            <div className="welcome-section">
-              <div className="user-info">
-                <span className="welcome-message">
-                  👋 Welcome, {user.email}!
-                </span>
-                <button 
-                  className="logout-btn"
-                  onClick={() => setUser(null)}
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-            
-            <div className="content-grid">
-              {/* Review Form Section - THIS SHOULD APPEAR ON THE LEFT */}
-              <div className="form-section">
-                <ReviewForm 
-                  user={user} 
-                  onReviewAdded={handleReviewAdded}
-                />
-              </div>
-              
-              {/* Reviews List Section - THIS SHOULD APPEAR ON THE RIGHT */}
-              <div className="reviews-section">
-                <ReviewList 
-                  key={refreshKey}
-                  user={user} 
-                />
-              </div>
+    <BrowserRouter>
+      <div className="min-h-screen bg-gray-50">
+        <nav className="bg-white shadow p-4">
+          <div className="container mx-auto flex justify-between items-center">
+            <Link to="/" className="font-bold text-xl">ReviewSaver</Link>
+            <div className="space-x-4">
+              {user ? (
+                <>
+                  <Link to={`/profile/${user.id}`}>Profile</Link>
+                  <button onClick={logout} className="text-red-500">Logout</button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login">Login</Link>
+                  <Link to="/register">Register</Link>
+                </>
+              )}
             </div>
           </div>
-        )}
-      </main>
-    </div>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+          <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/" />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
