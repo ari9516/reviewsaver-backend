@@ -25,18 +25,18 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const res = await api.post('/auth/login', { email, password });
-    // Adjust according to actual backend response (e.g., res.data.token or accessToken)
-    localStorage.setItem('token', res.data.token);
-    setUser(res.data.user);
-    return res.data;
+    // Mock login – store a fake token and user
+    localStorage.setItem('token', 'fake-jwt-token');
+    const userData = { id: 1, name: 'Test User', email };
+    setUser(userData);
+    return { user: userData, token: 'fake-token' };
   };
 
   const register = async (userData) => {
-    const res = await api.post('/auth/register', userData);
-    localStorage.setItem('token', res.data.token);
-    setUser(res.data.user);
-    return res.data;
+    localStorage.setItem('token', 'fake-jwt-token');
+    const newUser = { id: 1, ...userData };
+    setUser(newUser);
+    return { user: newUser, token: 'fake-token' };
   };
 
   const logout = () => {
