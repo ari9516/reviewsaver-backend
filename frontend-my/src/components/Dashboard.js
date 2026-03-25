@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import reviewService from '../services/reviewService';
 import './Dashboard.css';
 
-function Dashboard({ user }) {
+function Dashboard({ user, onStatsClick }) {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,6 +32,12 @@ function Dashboard({ user }) {
     });
   };
 
+  const handleStatClick = (type) => {
+    if (onStatsClick) {
+      onStatsClick(type);
+    }
+  };
+
   if (loading && !stats) {
     return <div className="loading">Loading dashboard...</div>;
   }
@@ -51,23 +57,46 @@ function Dashboard({ user }) {
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - CLICKABLE */}
       <div className="stats-grid">
-        <div className="stat-card">
+        <div 
+          className="stat-card clickable" 
+          onClick={() => handleStatClick('all')}
+          title="Click to see all your reviews"
+        >
           <div className="stat-value">{stats?.totalReviews || 0}</div>
           <div className="stat-label">Total Reviews</div>
+          <div className="stat-hint">📝 Click to view</div>
         </div>
-        <div className="stat-card upvote-stat">
+        
+        <div 
+          className="stat-card clickable upvote-stat" 
+          onClick={() => handleStatClick('upvotes')}
+          title="Click to see your most upvoted reviews"
+        >
           <div className="stat-value">👍 {stats?.totalUpvotes || 0}</div>
           <div className="stat-label">Upvotes Received</div>
+          <div className="stat-hint">⭐ Click to sort</div>
         </div>
-        <div className="stat-card downvote-stat">
+        
+        <div 
+          className="stat-card clickable downvote-stat" 
+          onClick={() => handleStatClick('downvotes')}
+          title="Click to see your most downvoted reviews"
+        >
           <div className="stat-value">👎 {stats?.totalDownvotes || 0}</div>
           <div className="stat-label">Downvotes Received</div>
+          <div className="stat-hint">⚠️ Click to sort</div>
         </div>
-        <div className="stat-card">
+        
+        <div 
+          className="stat-card clickable" 
+          onClick={() => handleStatClick('recent')}
+          title="Click to see your most recent reviews"
+        >
           <div className="stat-value">{stats?.totalReviews || 0}</div>
           <div className="stat-label">Reviews Written</div>
+          <div className="stat-hint">🕐 Click for recent</div>
         </div>
       </div>
     </div>

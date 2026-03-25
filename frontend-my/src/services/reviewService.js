@@ -139,6 +139,45 @@ const reviewService = {
       console.error('Get my reviews error:', error);
       throw error;
     }
+  },
+
+  // Get user's reviews sorted by upvotes (most upvoted first)
+  getUserReviewsByUpvotes: async (userId, page = 0, size = 10) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/reviews/user/${userId}/sorted?sortBy=upvotes&sortDir=desc&page=${page}&size=${size}`);
+      const data = await response.json();
+      console.log('User reviews by upvotes:', data);
+      return data;
+    } catch (error) {
+      console.error('Get user reviews by upvotes error:', error);
+      throw error;
+    }
+  },
+
+  // Get user's reviews sorted by downvotes (most downvoted first)
+  getUserReviewsByDownvotes: async (userId, page = 0, size = 10) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/reviews/user/${userId}/sorted?sortBy=downvotes&sortDir=desc&page=${page}&size=${size}`);
+      const data = await response.json();
+      console.log('User reviews by downvotes:', data);
+      return data;
+    } catch (error) {
+      console.error('Get user reviews by downvotes error:', error);
+      throw error;
+    }
+  },
+
+  // Get user's most recent reviews
+  getUserReviewsRecent: async (userId, page = 0, size = 10) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/reviews/user/${userId}/all?page=${page}&size=${size}`);
+      const data = await response.json();
+      console.log('User recent reviews:', data);
+      return data;
+    } catch (error) {
+      console.error('Get user recent reviews error:', error);
+      throw error;
+    }
   }
 };
 

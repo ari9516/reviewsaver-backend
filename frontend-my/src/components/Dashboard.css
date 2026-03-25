@@ -135,4 +135,55 @@
   .stat-value {
     font-size: 1.8rem;
   }
+
+  /* Clickable Stats Cards */
+.stat-card.clickable {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card.clickable:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card.clickable:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.stat-hint {
+  font-size: 0.7rem;
+  color: #a0aec0;
+  margin-top: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stat-card.clickable:hover .stat-hint {
+  opacity: 1;
+}
+
+/* Ripple effect on click */
+.stat-card.clickable::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(102, 126, 234, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.stat-card.clickable:active::after {
+  width: 200%;
+  height: 200%;
+  opacity: 0;
+  transition: 0s;
+}
+
 }

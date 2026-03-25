@@ -135,4 +135,21 @@ public class ReviewController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return reviewRepository.findByUserId(userId, pageable);
     }
+
+    // GET reviews by user with sorting (for dashboard click-through)
+    @GetMapping("/user/{userId}/sorted")
+    public Page<Review> getUserReviewsSorted(
+           @PathVariable Long userId,
+           @RequestParam(defaultValue = "createdAt") String sortBy,
+           @RequestParam(defaultValue = "desc") String sortDir,
+           @RequestParam(defaultValue = "0") int page,
+           @RequestParam(defaultValue = "10") int size) {
+    
+        Sort sort = sortDir.equalsIgnoreCase("desc") 
+        ? Sort.by(sortBy).descending() 
+        : Sort.by(sortBy).ascending();
+    
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return reviewRepository.findByUserId(userId, pageable);
+    }
 }
