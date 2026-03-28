@@ -2,8 +2,11 @@ package com.reviewsaver.backend.controller;
 
 import com.reviewsaver.backend.model.Review;
 import com.reviewsaver.backend.model.User;
+import com.reviewsaver.backend.model.UserInteraction;
 import com.reviewsaver.backend.repository.ReviewRepository;
 import com.reviewsaver.backend.repository.UserRepository;
+import com.reviewsaver.backend.repository.UserInteractionRepository;
+import com.reviewsaver.backend.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
@@ -23,6 +26,14 @@ public class ReviewController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserInteractionRepository interactionRepository;
+
+    @Autowired
+    private RecommendationService recommendationService;
+
+    // ================== REVIEW CRUD ==================
 
     // POST a new review
     @PostMapping
@@ -59,7 +70,7 @@ public class ReviewController {
         return reviewRepository.findByUserId(userId);
     }
 
-// Upvote a review
+    // Upvote a review
     @PutMapping("/{id}/upvote")
     @SuppressWarnings("null")
     public Review upvoteReview(@PathVariable Long id) {
@@ -68,7 +79,7 @@ public class ReviewController {
         return reviewRepository.save(review);
     }
 
-// Downvote a review
+    // Downvote a review
     @PutMapping("/{id}/downvote")
     @SuppressWarnings("null")
     public Review downvoteReview(@PathVariable Long id) {
@@ -76,6 +87,7 @@ public class ReviewController {
         review.setDownvotes(review.getDownvotes() + 1);
         return reviewRepository.save(review);
     }
+
     // ================== PAGINATION METHODS ==================
 
     // GET all reviews with pagination
@@ -115,7 +127,8 @@ public class ReviewController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return reviewRepository.findByUserId(userId, pageable);
     }
-// GET reviews by search term (product name)
+
+    // GET reviews by search term (product name)
     @GetMapping("/search")
     public Page<Review> searchReviews(
             @RequestParam String q,
@@ -125,6 +138,7 @@ public class ReviewController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return reviewRepository.findByProductNameContainingIgnoreCase(q, pageable);
     }
+
     // GET reviews by user with pagination (for dashboard)
     @GetMapping("/user/{userId}/all")
     public Page<Review> getUserReviewsPaged(
@@ -151,5 +165,44 @@ public class ReviewController {
     
         Pageable pageable = PageRequest.of(page, size, sort);
         return reviewRepository.findByUserId(userId, pageable);
+    }
+
+    // ================== RECOMMENDATION ENDPOINTS ==================
+
+    // Get personalized recommendations for user
+    @GetMapping("/recommendations/{userId}")
+    public Map<String, Object> getRecommendations(@PathVariable Long userId) {
+        return recommendationService.getPersonalizedRecommendations(userId, 10);
+    }
+
+    // Get trending reviews
+    @GetMapping("/trending")
+    public List<Review> getTrending() {
+        return recommendationService.getTrendingReviews(10);
+    }
+
+    // Track user interaction (view/click/search)
+    @PostMapping("/track-interaction")
+    public String trackInteraction(@RequestBody Map<String, Object> request) {
+        Long userId = Long.parseLong(request.get("userId").toString());
+        Long reviewId = Long.parseLong(request.get("reviewId").toString());
+        String type = request.get("type").toString();
+    
+        User user = userRepository.findById(userId).orElse(null);
+        Review review = reviewRepository.findById(reviewId).orElse(null);
+    
+        if (user != null && review != null) {
+            UserInteraction interaction = new UserInteraction(user, review, type);
+            interactionRepository.save(interaction);
+        }
+    
+        return "Interaction tracked";
+    }
+
+    // Update user preferences (call after review creation)
+    @PostMapping("/update-preferences/{userId}")
+    public String updatePreferences(@PathVariable Long userId) {
+        recommendationService.updateUserPreferences(userId);
+        return "Preferences updated";
     }
 }
