@@ -26,16 +26,35 @@ public class UserCategoryPreference {
         this.preferenceScore = preferenceScore;
     }
     
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
     
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public void setId(Long id) {
+        this.id = id;
+    }
     
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
+    public User getUser() {
+        return user;
+    }
     
-    public Double getPreferenceScore() { return preferenceScore; }
-    public void setPreferenceScore(Double preferenceScore) { this.preferenceScore = preferenceScore; }
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
+    public String getCategory() {
+        return category;
+    }
+    
+    public void setCategory(String category) {
+        this.category = category;
+    }
+    
+    public Double getPreferenceScore() {
+        return preferenceScore;
+    }
+    
+    public void setPreferenceScore(Double preferenceScore) {
+        this.preferenceScore = preferenceScore;
+    }
 }
