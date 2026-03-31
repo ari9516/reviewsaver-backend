@@ -419,3 +419,47 @@ html {
     background: #4c51bf;
   }
 }
+
+/* Navigation Item with Badge */
+.nav-item-with-badge {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.must-try-badge-nav {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 30px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+  animation: pulse 1.5s ease-in-out infinite;
+  letter-spacing: 0.5px;
+  z-index: 10;
+}
+
+.nav-link-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+  }
+}

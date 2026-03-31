@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import ProfilePage from './components/ProfilePage';
+import RecommendationsPage from './components/RecommendationsPage';
 import ReviewForm from './components/ReviewForm';
 import ReviewList from './components/ReviewList';
 import UserReviewsModal from './components/UserReviewsModal';
@@ -118,6 +119,18 @@ function App() {
               >
                 🏠 Dashboard
               </NavLink>
+              
+              {/* Recommendations with MUST TRY Badge */}
+              <div className="nav-item-with-badge">
+                <NavLink 
+                  to="/recommendations" 
+                  className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                >
+                  ✨ Recommendations
+                </NavLink>
+                <div className="must-try-badge-nav">✨ MUST TRY ✨</div>
+              </div>
+              
               <NavLink 
                 to="/profile" 
                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
@@ -158,6 +171,9 @@ function App() {
                   </div>
                 </div>
               </div>
+            } />
+            <Route path="/recommendations" element={
+              <RecommendationsPage user={user} />
             } />
             <Route path="/profile" element={
               <ProfilePage 
