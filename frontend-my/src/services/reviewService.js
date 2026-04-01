@@ -181,12 +181,122 @@ const reviewService = {
 
   // ========== RECOMMENDATION METHODS ==========
 
-  // Get personalized recommendations for user
+  // Check if user qualifies for NLP recommendations (Tier 2)
+  canUseNLP: async (userId) => {
+    try {
+      const stats = await reviewService.getUserStats(userId);
+      const reviewCount = stats?.totalReviews || 0;
+      const upvoteCount = stats?.totalUpvotes || 0;
+      
+      // Conditions for NLP eligibility
+      const hasEnoughReviews = reviewCount >= 6;
+      const hasGoodEngagement = (reviewCount >= 4 && upvoteCount >= 10);
+      
+      const eligible = hasEnoughReviews || hasGoodEngagement;
+      
+      console.log(`NLP Eligibility: ${eligible} (Reviews: ${reviewCount}, Upvotes: ${upvoteCount})`);
+      return eligible;
+    } catch (error) {
+      console.error('Error checking NLP eligibility:', error);
+      return false;
+    }
+  },
+
+  // Enhanced recommendations (Tier 1 - All users)
+  getEnhancedRecommendations: async (userId) => {
+    try {
+      // Get user stats and reviews
+      const stats = await reviewService.getUserStats(userId);
+      const userReviews = await reviewService.getMyReviews(userId);
+      
+      // Extract user's favorite categories
+      const categoryCount = {};
+      userReviews.forEach(review => {
+        categoryCount[review.category] = (categoryCount[review.category] || 0) + 1;
+      });
+      
+      let favoriteCategory = 'Movies';
+      if (Object.keys(categoryCount).length > 0) {
+        favoriteCategory = Object.keys(categoryCount).reduce((a, b) => 
+          categoryCount[a] > categoryCount[b] ? a : b, 'Movies');
+      }
+      
+      // Extract common keywords from user's reviews (positive ones)
+      const keywordMap = {};
+      const importantKeywords = ['amazing', 'great', 'best', 'awesome', 'love', 'perfect', 'excellent', 'good', 'nice', 'beautiful', 'fantastic', 'wonderful'];
+      
+      userReviews.forEach(review => {
+        if (review.rating >= 4) {
+          const words = review.reviewText.toLowerCase().split(/\s+/);
+          words.forEach(word => {
+            // Clean word from punctuation
+            const cleanWord = word.replace(/[^\w]/g, '');
+            if (importantKeywords.includes(cleanWord)) {
+              keywordMap[cleanWord] = (keywordMap[cleanWord] || 0) + review.rating;
+            }
+          });
+        }
+      });
+      
+      const sortedKeywords = Object.entries(keywordMap).sort((a, b) => b[1] - a[1]);
+      const topKeywords = sortedKeywords.slice(0, 3).map(k => k[0]);
+      
+      // Get recommendations from favorite category
+      let categoryData = { content: [] };
+      try {
+        const categoryResponse = await fetch(`${API_BASE_URL}/reviews/category/${favoriteCategory}/paged?page=0&size=5`);
+        categoryData = await categoryResponse.json();
+      } catch (error) {
+        console.error('Error fetching category recommendations:', error);
+      }
+      
+      // Get recommendations from keywords
+      let keywordResults = [];
+      for (const keyword of topKeywords) {
+        try {
+          const keywordResponse = await fetch(`${API_BASE_URL}/reviews/search?q=${keyword}&page=0&size=3`);
+          const keywordData = await keywordResponse.json();
+          keywordResults.push(...(keywordData.content || []));
+        } catch (error) {
+          console.error(`Error fetching keyword recommendations for ${keyword}:`, error);
+        }
+      }
+      
+      // Remove duplicates and user's own reviews
+      const userIdNum = parseInt(userId);
+      const uniqueResults = [...new Map(keywordResults.map(item => [item.id, item])).values()]
+        .filter(r => r.user?.id !== userIdNum);
+      
+      // Get trending
+      const trending = await reviewService.getTrending();
+      
+      return {
+        contentBased: categoryData.content?.slice(0, 5) || [],
+        trending: trending.slice(0, 8) || [],
+        becauseYouReviewed: userReviews.slice(0, 3) || [],
+        keywordBased: uniqueResults.slice(0, 5) || [],
+        favoriteCategory,
+        topKeywords
+      };
+    } catch (error) {
+      console.error('Error getting enhanced recommendations:', error);
+      // Fallback to trending only
+      const trending = await reviewService.getTrending();
+      return {
+        contentBased: [],
+        trending: trending.slice(0, 8) || [],
+        becauseYouReviewed: [],
+        keywordBased: []
+      };
+    }
+  },
+
+  // Get personalized recommendations for user (Full NLP - Tier 2)
   getRecommendations: async (userId) => {
     try {
       const response = await fetch(`${API_BASE_URL}/reviews/recommendations/${userId}`);
       const data = await response.json();
-      console.log('Recommendations response:', data);
+      console.log('NLP Recommendations response:', data);
       return data;
     } catch (error) {
       console.error('Get recommendations error:', error);

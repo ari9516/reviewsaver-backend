@@ -7,7 +7,10 @@ function RecommendationsPage({ user }) {
   const [recommendations, setRecommendations] = useState({
     contentBased: [],
     trending: [],
-    becauseYouReviewed: []
+    becauseYouReviewed: [],
+    keywordBased: [],
+    favoriteCategory: '',
+    topKeywords: []
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,6 +24,8 @@ function RecommendationsPage({ user }) {
   });
   const [quizRecommendations, setQuizRecommendations] = useState([]);
   const [quizLoading, setQuizLoading] = useState(false);
+  const [nlpEligible, setNlpEligible] = useState(false);
+  const [recommendationType, setRecommendationType] = useState('enhanced'); // 'enhanced' or 'nlp'
 
   const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://reviewsaver-backend-api.onrender.com/api';
 
@@ -78,15 +83,32 @@ function RecommendationsPage({ user }) {
     party: ['party', 'celebration', 'event', 'festive', 'fun', 'lively', 'crowd', 'vibrant', 'energetic', 'celebration']
   };
 
-  useEffect(() => {
-    loadRecommendations();
-  }, []);
+  // Check if user qualifies for NLP recommendations
+  const checkNlpEligibility = async () => {
+    const eligible = await reviewService.canUseNLP(user.id);
+    setNlpEligible(eligible);
+    if (eligible) {
+      setRecommendationType('nlp');
+    }
+  };
 
+  // Load recommendations based on user level
   const loadRecommendations = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await reviewService.getRecommendations(user.id);
+      let data;
+      
+      if (recommendationType === 'nlp' && nlpEligible) {
+        // Full NLP recommendations for engaged users
+        data = await reviewService.getRecommendations(user.id);
+        console.log('NLP Recommendations loaded for engaged user');
+      } else {
+        // Enhanced recommendations for all users
+        data = await reviewService.getEnhancedRecommendations(user.id);
+        console.log('Enhanced Recommendations loaded');
+      }
+      
       setRecommendations(data);
     } catch (error) {
       console.error('Error loading recommendations:', error);
@@ -95,6 +117,16 @@ function RecommendationsPage({ user }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    checkNlpEligibility();
+  }, []);
+
+  useEffect(() => {
+    if (recommendationType) {
+      loadRecommendations();
+    }
+  }, [recommendationType]);
 
   const handleQuizStart = () => {
     setShowQuiz(true);
@@ -117,10 +149,7 @@ function RecommendationsPage({ user }) {
     
     setQuizLoading(true);
     try {
-      // Fetch reviews from selected category
       let url = `${API_BASE_URL}/reviews/category/${encodeURIComponent(quizAnswers.category)}/paged?page=0&size=50`;
-      
-      console.log('Fetching from URL:', url);
       
       const response = await fetch(url);
       
@@ -129,45 +158,36 @@ function RecommendationsPage({ user }) {
       }
       
       const data = await response.json();
-      console.log('Fetched data:', data);
-      
       let filtered = data.content || [];
       
-      // ============================================
-      // ADVANCED TEXT-BASED FILTERING
-      // ============================================
-      
-      // 1. Mood-based filtering using review text keywords
+      // Mood-based filtering
       if (quizAnswers.mood && moodKeywords[quizAnswers.mood]) {
         const keywords = moodKeywords[quizAnswers.mood];
         filtered = filtered.filter(review => {
           const text = review.reviewText.toLowerCase();
           return keywords.some(keyword => text.includes(keyword.toLowerCase()));
         });
-        console.log(`After mood (${quizAnswers.mood}) filtering:`, filtered.length);
       }
       
-      // 2. Occasion-based filtering using review text keywords
+      // Occasion-based filtering
       if (quizAnswers.occasion && occasionKeywords[quizAnswers.occasion]) {
         const keywords = occasionKeywords[quizAnswers.occasion];
         filtered = filtered.filter(review => {
           const text = review.reviewText.toLowerCase();
           return keywords.some(keyword => text.includes(keyword.toLowerCase()));
         });
-        console.log(`After occasion (${quizAnswers.occasion}) filtering:`, filtered.length);
       }
       
-      // 3. Budget/Price filtering using review text keywords
+      // Budget filtering
       if (quizAnswers.budget && quizAnswers.budget !== 'any' && priceKeywords[quizAnswers.budget]) {
         const keywords = priceKeywords[quizAnswers.budget];
         filtered = filtered.filter(review => {
           const text = review.reviewText.toLowerCase();
           return keywords.some(keyword => text.includes(keyword.toLowerCase()));
         });
-        console.log(`After budget (${quizAnswers.budget}) filtering:`, filtered.length);
       }
       
-      // 4. Also apply rating-based filtering as backup
+      // Rating backup
       if (quizAnswers.mood === 'exciting') {
         filtered = filtered.filter(r => r.rating >= 4);
       } else if (quizAnswers.mood === 'relaxing') {
@@ -180,7 +200,6 @@ function RecommendationsPage({ user }) {
         filtered = filtered.filter(r => r.rating >= 4);
       }
       
-      // Budget rating filter
       if (quizAnswers.budget === 'budget') {
         filtered = filtered.filter(r => r.rating >= 3 && r.rating <= 4);
       } else if (quizAnswers.budget === 'moderate') {
@@ -189,10 +208,7 @@ function RecommendationsPage({ user }) {
         filtered = filtered.filter(r => r.rating >= 4.5);
       }
       
-      console.log('Final filtered results:', filtered.length);
-      
       if (filtered.length === 0) {
-        console.log('No results found, fetching trending reviews as fallback');
         const fallbackResponse = await fetch(`${API_BASE_URL}/reviews/trending`);
         const fallbackData = await fallbackResponse.json();
         setQuizRecommendations(fallbackData.slice(0, 5));
@@ -207,7 +223,6 @@ function RecommendationsPage({ user }) {
         const fallbackData = await fallbackResponse.json();
         setQuizRecommendations(fallbackData.slice(0, 5));
       } catch (fallbackError) {
-        console.error('Fallback also failed:', fallbackError);
         setQuizRecommendations([]);
       }
     } finally {
@@ -262,10 +277,27 @@ function RecommendationsPage({ user }) {
   const hasRecommendations = 
     (recommendations.contentBased?.length > 0) ||
     (recommendations.trending?.length > 0) ||
-    (recommendations.becauseYouReviewed?.length > 0);
+    (recommendations.becauseYouReviewed?.length > 0) ||
+    (recommendations.keywordBased?.length > 0);
 
   return (
     <div className="recommendations-page">
+      {/* Recommendation Type Badge */}
+      <div className="recommendation-badge-container">
+        {recommendationType === 'nlp' && nlpEligible ? (
+          <div className="nlp-badge">
+            <span className="nlp-icon">🧠</span>
+            <span className="nlp-text">AI-Powered Recommendations</span>
+            <span className="nlp-tooltip" title="Based on your review history and preferences">✨</span>
+          </div>
+        ) : (
+          <div className="enhanced-badge">
+            <span className="enhanced-icon">✨</span>
+            <span className="enhanced-text">Personalized for You</span>
+          </div>
+        )}
+      </div>
+
       {/* Find Your Perfect Match Button */}
       <div className="perfect-match-container">
         <button onClick={handleQuizStart} className="perfect-match-btn">
@@ -413,7 +445,7 @@ function RecommendationsPage({ user }) {
         </div>
       )}
 
-      {/* Regular Recommendations (if any) */}
+      {/* Regular Recommendations */}
       {!showQuiz && (
         <>
           {!hasRecommendations ? (
@@ -423,6 +455,45 @@ function RecommendationsPage({ user }) {
             </div>
           ) : (
             <>
+              {/* Keyword-based recommendations (Enhanced tier only) */}
+              {recommendationType === 'enhanced' && recommendations.keywordBased?.length > 0 && (
+                <div className="rec-section">
+                  <div className="rec-section-header">
+                    <h2>🔍 Based on Your Favorite Words</h2>
+                    <p>We found these using keywords from your reviews</p>
+                  </div>
+                  <div className="rec-cards-grid">
+                    {recommendations.keywordBased.map(review => (
+                      <a 
+                        key={review.id} 
+                        href={`/review/${review.id}`}
+                        className="rec-card keyword-card"
+                        onClick={() => handleReviewClick(review.id)}
+                      >
+                        <div className="rec-card-header">
+                          <h3>{review.productName}</h3>
+                          <span className="rec-category-badge">{review.category}</span>
+                        </div>
+                        <div className="rec-rating">
+                          {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                        </div>
+                        <p className="rec-review-text">"{review.reviewText.substring(0, 100)}..."</p>
+                        <div className="rec-card-footer">
+                          <div className="rec-user">
+                            <span className="rec-user-icon">👤</span>
+                            {review.user?.email?.split('@')[0]}
+                          </div>
+                          <div className="rec-upvotes">
+                            👍 {review.upvotes} upvotes
+                          </div>
+                        </div>
+                        <div className="rec-date">📅 {formatDate(review.createdAt)}</div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Trending Recommendations */}
               {recommendations.trending?.length > 0 && (
                 <div className="rec-section">
@@ -462,7 +533,7 @@ function RecommendationsPage({ user }) {
                 </div>
               )}
 
-              {/* Personalized Recommendations */}
+              {/* Personalized Recommendations (Category-based) */}
               {recommendations.contentBased?.length > 0 && (
                 <div className="rec-section">
                   <div className="rec-section-header">

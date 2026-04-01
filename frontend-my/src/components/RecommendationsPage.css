@@ -658,3 +658,31 @@
 .quiz-browse-btn:hover {
   transform: translateY(-2px);
 }
+
+/* NLP Badge */
+.nlp-badge, .enhanced-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0.4rem 1rem;
+  border-radius: 40px;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+}
+
+.nlp-icon, .enhanced-icon {
+  font-size: 1rem;
+}
+
+.nlp-tooltip {
+  position: relative;
+  cursor: help;
+}
+
+/* Keyword Cards */
+.keyword-card {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e6f0ff 100%);
+}
