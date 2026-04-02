@@ -158,6 +158,36 @@
   color: #4a5568;
 }
 
+/* Additional styles for Register OTP page */
+.auth-link {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.auth-link a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1rem;
+  padding: 0;
+}
+
+.resend-btn:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 768px) {
   .login-container {
     margin: 20px;

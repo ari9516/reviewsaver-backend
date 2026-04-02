@@ -1,19 +1,123 @@
 import API_BASE_URL from '../config';
 
 const reviewService = {
-  // ========== AUTHENTICATION ==========
-  login: async (email, deviceHash) => {
+  // ========== AUTHENTICATION (NEW EMAIL/PASSWORD) ==========
+  
+  // Register new user
+  register: async (email, password) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/login`, {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, deviceHash })
+        body: JSON.stringify({ email, password })
+      });
+      const data = await response.json();
+      console.log('Register response:', data);
+      return data;
+    } catch (error) {
+      console.error('Register error:', error);
+      throw error;
+    }
+  },
+
+  // Verify email with OTP
+  verifyEmail: async (email, otp) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp })
+      });
+      const data = await response.json();
+      console.log('Verify email response:', data);
+      return data;
+    } catch (error) {
+      console.error('Verify email error:', error);
+      throw error;
+    }
+  },
+
+  // Login with email and password
+  login: async (email, password) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
       });
       const data = await response.json();
       console.log('Login response:', data);
       return data;
     } catch (error) {
       console.error('Login error:', error);
+      throw error;
+    }
+  },
+
+  // Resend OTP
+  resendOtp: async (email) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/resend-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await response.json();
+      console.log('Resend OTP response:', data);
+      return data;
+    } catch (error) {
+      console.error('Resend OTP error:', error);
+      throw error;
+    }
+  },
+
+  // Forgot password - request reset
+  forgotPassword: async (email) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await response.json();
+      console.log('Forgot password response:', data);
+      return data;
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      throw error;
+    }
+  },
+
+  // Reset password with token
+  resetPassword: async (token, newPassword) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, newPassword })
+      });
+      const data = await response.json();
+      console.log('Reset password response:', data);
+      return data;
+    } catch (error) {
+      console.error('Reset password error:', error);
+      throw error;
+    }
+  },
+
+  // ========== DEVICE HASH LOGIN (Backward Compatible) ==========
+  loginWithDevice: async (email, deviceHash) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login-device`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, deviceHash })
+      });
+      const data = await response.json();
+      console.log('Device login response:', data);
+      return data;
+    } catch (error) {
+      console.error('Device login error:', error);
       throw error;
     }
   },
@@ -188,7 +292,6 @@ const reviewService = {
       const reviewCount = stats?.totalReviews || 0;
       const upvoteCount = stats?.totalUpvotes || 0;
       
-      // Conditions for NLP eligibility
       const hasEnoughReviews = reviewCount >= 6;
       const hasGoodEngagement = (reviewCount >= 4 && upvoteCount >= 10);
       
@@ -205,11 +308,8 @@ const reviewService = {
   // Enhanced recommendations (Tier 1 - All users)
   getEnhancedRecommendations: async (userId) => {
     try {
-      // Get user stats and reviews
-      const stats = await reviewService.getUserStats(userId);
       const userReviews = await reviewService.getMyReviews(userId);
       
-      // Extract user's favorite categories
       const categoryCount = {};
       userReviews.forEach(review => {
         categoryCount[review.category] = (categoryCount[review.category] || 0) + 1;
@@ -221,66 +321,18 @@ const reviewService = {
           categoryCount[a] > categoryCount[b] ? a : b, 'Movies');
       }
       
-      // Extract common keywords from user's reviews (positive ones)
-      const keywordMap = {};
-      const importantKeywords = ['amazing', 'great', 'best', 'awesome', 'love', 'perfect', 'excellent', 'good', 'nice', 'beautiful', 'fantastic', 'wonderful'];
-      
-      userReviews.forEach(review => {
-        if (review.rating >= 4) {
-          const words = review.reviewText.toLowerCase().split(/\s+/);
-          words.forEach(word => {
-            // Clean word from punctuation
-            const cleanWord = word.replace(/[^\w]/g, '');
-            if (importantKeywords.includes(cleanWord)) {
-              keywordMap[cleanWord] = (keywordMap[cleanWord] || 0) + review.rating;
-            }
-          });
-        }
-      });
-      
-      const sortedKeywords = Object.entries(keywordMap).sort((a, b) => b[1] - a[1]);
-      const topKeywords = sortedKeywords.slice(0, 3).map(k => k[0]);
-      
-      // Get recommendations from favorite category
-      let categoryData = { content: [] };
-      try {
-        const categoryResponse = await fetch(`${API_BASE_URL}/reviews/category/${favoriteCategory}/paged?page=0&size=5`);
-        categoryData = await categoryResponse.json();
-      } catch (error) {
-        console.error('Error fetching category recommendations:', error);
-      }
-      
-      // Get recommendations from keywords
-      let keywordResults = [];
-      for (const keyword of topKeywords) {
-        try {
-          const keywordResponse = await fetch(`${API_BASE_URL}/reviews/search?q=${keyword}&page=0&size=3`);
-          const keywordData = await keywordResponse.json();
-          keywordResults.push(...(keywordData.content || []));
-        } catch (error) {
-          console.error(`Error fetching keyword recommendations for ${keyword}:`, error);
-        }
-      }
-      
-      // Remove duplicates and user's own reviews
-      const userIdNum = parseInt(userId);
-      const uniqueResults = [...new Map(keywordResults.map(item => [item.id, item])).values()]
-        .filter(r => r.user?.id !== userIdNum);
-      
-      // Get trending
+      const categoryResponse = await fetch(`${API_BASE_URL}/reviews/category/${favoriteCategory}/paged?page=0&size=5`);
+      const categoryData = await categoryResponse.json();
       const trending = await reviewService.getTrending();
       
       return {
         contentBased: categoryData.content?.slice(0, 5) || [],
         trending: trending.slice(0, 8) || [],
         becauseYouReviewed: userReviews.slice(0, 3) || [],
-        keywordBased: uniqueResults.slice(0, 5) || [],
-        favoriteCategory,
-        topKeywords
+        keywordBased: []
       };
     } catch (error) {
       console.error('Error getting enhanced recommendations:', error);
-      // Fallback to trending only
       const trending = await reviewService.getTrending();
       return {
         contentBased: [],
@@ -355,3 +407,4 @@ const reviewService = {
 };
 
 export default reviewService;
+
