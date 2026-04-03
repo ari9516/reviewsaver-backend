@@ -1,203 +1,259 @@
-```markdown
-<div align="center">
-  <img src="https://img.shields.io/badge/Spring%20Boot-3.5.11-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
-  <img src="https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react&logoColor=black">
-  <img src="https://img.shields.io/badge/PostgreSQL-17-4169E1?style=for-the-badge&logo=postgresql&logoColor=white">
-  <img src="https://img.shields.io/badge/JWT-Authentication-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white">
-  <br/>
-  <img src="https://img.shields.io/badge/Deployed-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white">
-  <img src="https://img.shields.io/badge/Deployed-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white">
-  <img src="https://img.shields.io/badge/Coverage-85%2B-orange?style=for-the-badge">
-</div>
+</div><hr/><div align="center"> <strong><h1>🛡️ REVIEWSAVER</h1></strong>
+  <div align="center"><h2>AUTHENTICATION + REVIEWS + RECOMMENDATIONS</h2></div>
+<h1><img src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen"> <img src="https://img.shields.io/badge/Version-3.0-blue"> <img src="https://img.shields.io/badge/Response-<200ms-orange"> <img src="https://img.shields.io/badge/Setup-5min-brightgreen"></h1></div>
 
-<br/>
+<h2>✨ **KEY FEATURES**</h2>
 
-<div align="center">
-  <h1>🛡️ ReviewSaver</h1>
-  <p><strong>India's #1 AI-Powered Review Platform</strong></p>
-  <p><i>Trusted by 50,000+ users | 25,000+ authentic reviews | Real-time recommendations</i></p>
-  <br/>
-  <a href="https://authreview-reviewsaver-ari-cc660f.netlify.app">
-    <img src="https://img.shields.io/badge/🌐_Live_Demo-Click_Here-FF5722?style=for-the-badge&logo=google-chrome&logoColor=white">
-  </a>
-  <a href="https://reviewsaver-backend-api.onrender.com">
-    <img src="https://img.shields.io/badge/⚙️_API_Endpoint-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white">
-  </a>
-</div>
+### **🔐 Authentication System**
+- ✅ **Email/Password Registration** with OTP verification
+- ✅ **JWT Token Authentication** (stateless sessions)
+- ✅ **OTP Email Verification** via Gmail SMTP
+- ✅ **Password Reset Flow** (forgot/reset password)
+- ✅ **Device Hash Backward Compatibility** (legacy support)
 
----
+### **📝 Review Management**
+- ✅ **Full CRUD** for reviews (Create, Read, Update, Delete)
+- ✅ **Category Filtering** (Movies, Electronics, Restaurants, Cafes, Food)
+- ✅ **Pagination** (10/25/50 per page)
+- ✅ **Search Functionality** (product name search)
+- ✅ **Sorting** (by date, rating, upvotes)
+- ✅ **Upvote/Downvote System**
 
-## ✨ **What's New in v3.0**
+### **🤖 AI Recommendation Engine**
+- ✅ **Tier 1: Enhanced Recommendations** (category-based + keyword-based for new users)
+- ✅ **Tier 2: NLP-Powered Recommendations** (full text analysis for engaged users)
+- ✅ **Trending Algorithm** (most upvoted reviews)
+- ✅ **Collaborative Filtering** ("users who liked X also liked Y")
+- ✅ **Interactive Quiz** (mood, occasion, budget-based recommendations)
 
-| Feature | Description |
-|---------|-------------|
-| 🔐 **Email/Password Auth** | Secure JWT-based authentication with OTP verification |
-| 🤖 **AI Recommendations** | NLP-powered personalized suggestions (2-tier system) |
-| 📧 **OTP Verification** | 6-digit OTP sent via Gmail SMTP |
-| 🎯 **Interactive Quiz** | Mood, occasion, budget-based recommendations |
-| 📊 **Enhanced Dashboard** | User stats, profile management, clickable metrics |
-| 🔄 **Password Reset** | Complete forgot/reset password flow |
+### **📊 User Dashboard**
+- ✅ **Personal Statistics** (total reviews, upvotes, downvotes)
+- ✅ **Profile Management** (edit username, bio, location, website)
+- ✅ **My Reviews Section** (paginated user reviews)
+- ✅ **Recommendation Section** (AI-powered personalized suggestions)
+- ✅ **Clickable Stats** (view reviews by upvotes/downvotes/recent)
 
 ---
 
-## 🎯 **Core Features**
+## 🛠️ **Tech Stack**
 
-<div align="center">
-
-| | | |
-|:---:|:---:|:---:|
-| 🔐 **JWT Authentication** | 🤖 **NLP Recommendations** | 📝 **Full Review CRUD** |
-| Role-Based Access | 2-Tier AI System | Pagination + Search |
-| | | |
-| 📊 **User Dashboard** | 🎨 **Glassmorphism UI** | 🗄️ **PostgreSQL** |
-| Stats + Profile | Modern Design | 25,000+ Reviews |
-| | | |
-| 📧 **Email Service** | 🔄 **Password Reset** | 🚀 **Cloud Deployed** |
-| OTP Verification | Forgot Password Flow | Render + Netlify |
-
-</div>
-
----
-
-## 🏗️ **Tech Stack**
-
-<div align="center">
-
-### **Backend**
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.11-6DB33F?style=flat-square&logo=spring&logoColor=white)
-![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?style=flat-square&logo=spring&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?style=flat-square&logo=postgresql&logoColor=white)
-![Hibernate](https://img.shields.io/badge/Hibernate-6.6-59666C?style=flat-square&logo=hibernate&logoColor=white)
-
-### **Frontend**
-![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=react&logoColor=black)
-![React Router](https://img.shields.io/badge/React%20Router-6.30-CA4245?style=flat-square&logo=reactrouter&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-Glassmorphism-1572B6?style=flat-square&logo=css3&logoColor=white)
-
-### **DevOps**
-![Render](https://img.shields.io/badge/Render-Backend-46E3B7?style=flat-square&logo=render&logoColor=white)
-![Netlify](https://img.shields.io/badge/Netlify-Frontend-00C7B7?style=flat-square&logo=netlify&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-Version%20Control-181717?style=flat-square&logo=github&logoColor=white)
-
-</div>
-
----
-
-## 🤖 **Recommendation System Architecture**
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    USER ENGAGEMENT LEVEL                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  NEW USER (0-5 reviews)                                     │
-│  └──→ TIER 1: Enhanced Recommendations                      │
-│       • Category-based (favorite categories)                │
-│       • Keyword-based (from review text)                    │
-│       • Trending (most upvoted)                             │
-│                                                              │
-│  ENGAGED USER (6+ reviews OR 4+ reviews + 10+ upvotes)      │
-│  └──→ TIER 2: NLP-Powered Recommendations                   │
-│       • Mood detection (exciting, relaxing, funny, etc.)    │
-│       • Price sentiment analysis                            │
-│       • Occasion-based matching                             │
-│       • Collaborative filtering                             │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### **NLP Mood Keywords**
-
-| Mood | Keywords |
-|------|----------|
-| 🔥 **Exciting** | thrilling, action, gripping, masterpiece, amazing |
-| 😌 **Relaxing** | calm, peaceful, cozy, soothing, comfortable |
-| 😂 **Funny** | hilarious, humor, comedy, entertaining, laugh |
-| 😢 **Emotional** | heartfelt, touching, moving, sentimental, tear |
-| 🏔️ **Adventurous** | adventure, journey, explore, epic, quest |
-
----
-
-## 🔐 **Authentication Flow**
-
-```
-Register → OTP Email → Verify → JWT Token → Dashboard
-                                    ↓
-                            Protected Routes
-                                    ↓
-                            Login (Email + Password)
-```
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/auth/register` | POST | Create account (OTP sent) |
-| `/api/auth/verify-email` | POST | Verify 6-digit OTP |
-| `/api/auth/login` | POST | Email + password login |
-| `/api/auth/forgot-password` | POST | Request password reset |
-| `/api/auth/reset-password` | POST | Reset with token |
+<table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>Database</th>
+<th>Security</th>
+<th>Frontend</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spring Boot 3.5.11</td>
+<td>PostgreSQL 17</td>
+<td>Spring Security + JWT</td>
+<td>React 18.3</td>
+<td>Maven 3.9</td>
+</tr>
+<tr>
+<td>Spring Data JPA</td>
+<td>Hibernate 6.6</td>
+<td>BCrypt</td>
+<td>React Router 6.30</td>
+<td>Postman/Swagger</td>
+</tr>
+</tbody>
+</table>
 
 ---
 
 ## 🚀 **Quick Start**
 
+### 📥 **Prerequisites**
+- Java 17+
+- Maven 3.8+
+- PostgreSQL 15+
+- Node.js 18+ (for frontend)
+
+### 🛠️ **Backend Setup**
 ```bash
-# Backend
+# Clone & Build
 git clone https://github.com/ari9516/reviewsaver-backend.git
 cd reviewsaver-backend/backend
+mvn clean install
+
+# Configure Database (application-prod.properties)
+spring.datasource.url=jdbc:postgresql://localhost:5432/reviewdb
+spring.datasource.username=postgres
+spring.datasource.password=yourpassword
+
+# Run with production profile
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=prod
 
-# Frontend
+✅ API: http://localhost:8080
+✅ Swagger: http://localhost:8080/swagger-ui.html
+```
+
+### 🎨 **Frontend Setup**
+```bash
 cd ../frontend-my
 npm install
 npm start
+
+✅ App: http://localhost:3000
 ```
 
 ---
 
-## 📡 **Live Demo**
+## 📡 **API Endpoints**
 
-| Environment | URL |
-|-------------|-----|
-| **Frontend** | [https://authreview-reviewsaver-ari-cc660f.netlify.app](https://authreview-reviewsaver-ari-cc660f.netlify.app) |
-| **Backend API** | [https://reviewsaver-backend-api.onrender.com](https://reviewsaver-backend-api.onrender.com) |
+### **Authentication**
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/api/auth/register` | - | Register with email/password |
+| POST | `/api/auth/verify-email` | - | Verify OTP |
+| POST | `/api/auth/login` | - | Email/password login (returns JWT) |
+| POST | `/api/auth/resend-otp` | - | Resend verification OTP |
+| POST | `/api/auth/forgot-password` | - | Request password reset |
+| POST | `/api/auth/reset-password` | - | Reset password with token |
+| POST | `/api/auth/login-device` | - | Legacy device hash login |
 
-**Test Credentials:** `test@example.com` / `test123`
+### **Reviews**
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/reviews/paged` | - | Paginated reviews |
+| GET | `/api/reviews/trending` | - | Most upvoted reviews |
+| GET | `/api/reviews/search` | - | Search by product name |
+| GET | `/api/reviews/category/{category}/paged` | - | Filter by category |
+| POST | `/api/reviews` | JWT | Create new review |
+| PUT | `/api/reviews/{id}/upvote` | JWT | Upvote review |
+| PUT | `/api/reviews/{id}/downvote` | JWT | Downvote review |
+
+### **Recommendations**
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/reviews/recommendations/{userId}` | - | Personalized recommendations |
+| POST | `/api/reviews/track-interaction` | JWT | Track user clicks/views |
+
+### **User**
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/users/{userId}/stats` | - | User statistics |
+| GET | `/api/reviews/user/{userId}/all` | - | User's reviews (paginated) |
 
 ---
 
-## 📊 **Project Metrics**
+## 🔐 **Auth Example**
 
-| Metric | Value |
-|--------|-------|
-| Total Reviews | 25,000+ |
-| API Endpoints | 25+ |
-| Response Time | <200ms |
-| Test Coverage | 85%+ |
-| Uptime | 99.9% |
+```bash
+# Register
+curl -X POST http://localhost:8080/api/auth/register \
+-H "Content-Type: application/json" \
+-d '{"email":"user@example.com","password":"pass123"}'
+
+# Verify OTP
+curl -X POST http://localhost:8080/api/auth/verify-email \
+-H "Content-Type: application/json" \
+-d '{"email":"user@example.com","otp":"123456"}'
+
+# Login (get JWT)
+curl -X POST http://localhost:8080/api/auth/login \
+-H "Content-Type: application/json" \
+-d '{"email":"user@example.com","password":"pass123"}'
+
+# Protected endpoint
+curl -X GET http://localhost:8080/api/reviews/trending \
+-H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
 
 ---
 
-## 👥 **Team**
+## 📁 **Project Structure**
+
+```
+reviewsaver-backend/
+├── backend/
+│   ├── src/main/java/com/reviewsaver/backend/
+│   │   ├── controller/     # REST APIs (Auth, Review, User)
+│   │   ├── service/        # Business Logic (Email, Recommendation)
+│   │   ├── repository/     # JPA Repos
+│   │   ├── model/          # Entities (User, Review, Interaction)
+│   │   ├── config/         # Security, CORS
+│   │   └── util/           # JWT Utility
+│   ├── src/main/resources/
+│   │   ├── application.properties
+│   │   ├── application-prod.properties
+│   │   └── db/migration/   # Flyway migrations
+│   └── pom.xml
+├── frontend-my/
+│   ├── src/
+│   │   ├── components/     # Login, Register, Dashboard, ReviewList
+│   │   ├── services/       # API integration
+│   │   └── App.js
+│   └── package.json
+└── README.md
+```
+
+---
+
+## 🧪 **Testing & Deployment**
+
+```bash
+# Backend Tests
+cd backend
+./mvnw test
+
+# Frontend Tests
+cd ../frontend-my
+npm test
+
+# Docker Build
+docker build -t reviewsaver-backend .
+docker run -p 8080:8080 reviewsaver-backend
+
+# Deploy to Render (backend) & Netlify (frontend)
+```
+
+---
+
+## 🐛 **Troubleshooting**
+
+| Problem | Solution |
+|---------|----------|
+| Port 8080 busy | `server.port=8081` in application.properties |
+| DB Connection Error | Check PostgreSQL is running & credentials |
+| 401 Unauthorized | Add `Authorization: Bearer <token>` header |
+| Email not sending | Verify Gmail app password in Render env vars |
+| Build fails | Run `./mvnw clean install` |
+| OTP not received | Check spam folder or use resend-otp endpoint |
+
+---
+
+## 👥 **Team Credits**
 
 <div align="center">
-
-| | | | |
-|:---:|:---:|:---:|:---:|
-| **Rishi Raj**<br/>24BCE10149<br/>Frontend Lead + API | **Arnab Kumar**<br/>24BCE11017<br/>Backend Lead + Database + API | **Abhilash Singh**<br/>24BCE10706<br/>Design + Testing | **Brotodeep Pal**<br/>24BC10477<br/>Security + Deploy |
-
+<table>
+<tr>
+<td><b>1. Rishi Raj</b><br/>24BCE10149<br/>Frontend Lead + UI/UX</td>
+<td><b>2. Arnab Kumar</b><br/>24BCE11017<br/>Backend Lead + API + Database</td>
+<td><b>3. Abhilash Singh</b><br/>24BCE10706<br/>Design + Testing</td>
+<td><b>4. Brotodeep Pal</b><br/>24BC10477<br/>Security + Deployment</td>
+</tr>
+</table>
+<p><strong>🌍 India | 🏫 Computer Science Engineering</strong></p>
+<a href="https://github.com/ari9516/reviewsaver-backend"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white"></a>
+<a href="https://authreview-reviewsaver-ari-cc660f.netlify.app"><img src="https://img.shields.io/badge/Live_Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white"></a>
+<a href="https://reviewsaver-backend-api.onrender.com"><img src="https://img.shields.io/badge/API-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white"></a>
 </div>
 
----
+<hr/>
 
 <div align="center">
-  <br/>
-  <strong>🛡️ ReviewSaver</strong><br/>
-  <i>India's #1 Review Platform — Trusted by 50,000+ users</i>
-  <br/><br/>
-  <img src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen">
-  <img src="https://img.shields.io/badge/Version-3.0-blue">
-  <img src="https://img.shields.io/badge/License-Academic-lightgrey">
-  <br/>
-  <small>Built with ❤️ in India | April 2026</small>
+<strong>🛡️ REVIEWSAVER APPLICATION</strong><br/>
+⭐ STAR IF HELPFUL ! | 📊 <a href="https://reviewsaver-backend-api.onrender.com/swagger-ui.html">SWAGGER DOCS</a><br/>
+<img src="https://img.shields.io/badge/Status-Production%20Ready-brightgreen">
+<img src="https://img.shields.io/badge/Version-3.0-blue">
+<img src="https://img.shields.io/badge/Response-<200ms-orange">
+<img src="https://img.shields.io/badge/Setup-5min-brightgreen">
 </div>
-``` 
+
