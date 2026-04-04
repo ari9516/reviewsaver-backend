@@ -24,7 +24,7 @@
 ## 📖 Project Report
 
 The full academic project report is available here:  
-📄 **[`docs/Project_Report_GROUP-129.pdf`](docs/Project_Report_GROUP-129.pdf)**
+📄 **[Project Report (GROUP-129).pdf](https://github.com/user-attachments/files/26483637/Project.Report.GROUP-129.pdf)**
 
 > _Submitted to VIT Bhopal University, School of Computing Science and Engineering, April 2026._
 
@@ -35,14 +35,14 @@ The full academic project report is available here:
 ### Use Case Diagram
 > Illustrates all interactions between Guest users, Authenticated users, and the System.
 
-![Use Case Diagram](docs/diagrams/Use_Case_Diagram.png)
+<img width="760" height="800" alt="3_Use_Case_Diagram" src="https://github.com/user-attachments/assets/54dfbd48-6919-4fe7-a828-d2500f1de863" />
 
 ### Data Flow Diagram
 > Shows the authentication flow (JWT + OTP) and the review + AI recommendation pipeline.
 
-![Data Flow Diagram](docs/diagrams/Data_Flow_Diagram.png)
-
+<img width="760" height="800" alt="4_Data_Flow_Diagram" src="https://github.com/user-attachments/assets/b5153e5a-f3f5-4f06-91e3-9d492bf0a0ec" />
 ---
+
 
 ## 📋 Table of Contents
 
@@ -325,7 +325,7 @@ Security validation confirmed: all unauthorized requests to protected endpoints 
 
 ## 👥 Team
 
-**GROUP-129 — VIT Bhopal University, B.Tech CSE, 2026**
+**GROUP-129 — VIT Bhopal University, B.Tech CSE, 2028**
 
 | Name | Roll Number |
 |---|---|
