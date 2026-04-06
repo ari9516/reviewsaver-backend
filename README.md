@@ -242,7 +242,7 @@ The backend will start at `http://localhost:8080`.
 
 ```bash
 # Clone the frontend repo and install dependencies
-git clone https://github.com/RishiRaj1495/reviewsaver-frontend.git
+git clone https://github.com/ari9516/reviewsaver-frontend.git
 cd reviewsaver-frontend
 npm install
 npm start
@@ -327,13 +327,12 @@ Security validation confirmed: all unauthorized requests to protected endpoints 
 
 **GROUP-129 — VIT Bhopal University, B.Tech CSE, 2028**
 
-| Name | Roll Number |
-|---|---|
-| Rishi Raj | 24BCE10149 |
-| Abhilash Singh | 24BCE10706 |
-| Arnab Kumar | 24BCE11017 |
-| Brotodeep Pal | 24BCE10477 |
-| Anjistha Sharma | 24BCE10037 |
+| Name | Roll Number | Roles |
+|---|---|---|
+| Rishi Raj | 24BCE10149 | Frontend Lead |
+| Abhilash Singh | 24BCE10706 | UI/UX and System Design |
+| Arnab Kumar | 24BCE11017 | Backend Lead + Database + API |
+| Brotodeep Pal | 24BCE10477 | Security + Deployment |
 
 **Project Guide:** Dr. Sasmita Padhy, School of Computer Science and Engineering, VIT Bhopal University  
 **Program Chair:** Dr. Vikas Panthi
