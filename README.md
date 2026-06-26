@@ -334,8 +334,9 @@ Security validation confirmed: all unauthorized requests to protected endpoints 
 | Arnab Kumar | 24BCE11017 | Backend Lead + Database + API |
 | Brotodeep Pal | 24BCE10477 | Security + Deployment |
 
-**Project Guide:** Dr. Sasmita Padhy, School of Computer Science and Engineering, VIT Bhopal University  
+**Project Guide:** Dr. Sasmita Padhy 
 **Program Chair:** Dr. Vikas Panthi
+**School of Computer Science and Engineering, VIT Bhopal University**
 
 ---
 
